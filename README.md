@@ -1,4 +1,4 @@
-# Nextcloud Docker
+# Nextcloud with Docker
 
 ## Installation
 
