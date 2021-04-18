@@ -2,13 +2,11 @@ version: "3"
 services:
 
   app:
-    image: nextcloud
-    container_name: ${APP_NAME}_http
+    image: nextcloud:fpm
+    container_name: ${APP_NAME}_app
     restart: unless-stopped
     volumes:
       - ./data/app:/var/www/html
-    ports:
-      - 127.0.0.1:${APP_PORT}:80
     depends_on:
       - database
     env_file:
@@ -20,9 +18,21 @@ services:
         max-size: "1m"
         max-file: "10"
 
+  http:
+    image: nginx
+    restart: always
+    ports:
+      - 127.0.0.1:${APP_PORT}:80
+    depends_on:
+      - app
+    volumes:
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    volumes_from:
+      - app
+
   database:
     image: mariadb
-    container_name: ${APP_NAME}_mysql
+    container_name: ${APP_NAME}_database
     restart: unless-stopped
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     volumes:

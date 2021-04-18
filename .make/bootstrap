@@ -91,4 +91,3 @@ down:
 
 dump:
 	make mysql/dump
-	make filesystem/dump
